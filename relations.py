@@ -187,6 +187,7 @@ class Registry:
         return lst
 
 
+# TESTS
 
 rdb = Registry()
 
