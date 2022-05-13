@@ -28,9 +28,8 @@ def is_point_in_path(p, poly):
             j = i
         return c
 
-# test
+# TEST
 poly = [(1,0), (0,1), (-1,0), (0,-1)]
-
 p = (1, 0)
 if is_point_in_path(p, poly):
     print ('Yes')
