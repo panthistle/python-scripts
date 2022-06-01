@@ -1,2 +1,2 @@
 # python-scripts
-various python scripts occasionally used for quick reference
+various python scripts I occasionally use for quick reference
