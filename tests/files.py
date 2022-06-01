@@ -6,7 +6,7 @@
 #f = open("files_test.txt", "r")		# read only
 #f = open("files_test.txt", "w")		# write only
 #f = open("files_test.txt", "a")		# append
-#f = open("files_test.txt", "r+")	    # read and write
+#f = open("files_test.txt", "r+")	    	# read and write
 #print(f.name)
 #print(f.mode)
 #f.close()
@@ -29,21 +29,21 @@ with open("files_test_read.txt", "r") as f:
     f_out = f.readlines()
     print(f_out)
 
-	# use readline() for single line - includes extra newline feed (\n)
+    # use readline() for single line - includes extra newline feed (\n)
     f.seek(0)
     f_out = f.readline()
     print(f_out)
     f_out = f.readline()
     print(f_out)
 
-	# use readline() for single line - without extra newline feed (\n)
+    # use readline() for single line - without extra newline feed (\n)
     f.seek(0)
     f_out = f.readline()
     print(f_out, end='')
     f_out = f.readline()
     print(f_out, end='')
 
-	# iterate through lines
+    # iterate through lines
     f.seek(0)
     for line in f:
         print(line, end='')
@@ -56,7 +56,7 @@ with open("files_test_read.txt", "r") as f:
     f_out = f.read(30)
     print(f_out)
 
-	# iterate through small chunks
+    # iterate through small chunks
     f.seek(0)
     size_to_read = 100
     f_out = f.read(size_to_read)
@@ -64,7 +64,7 @@ with open("files_test_read.txt", "r") as f:
         print(f_out)
         f_out = f.read(size_to_read)
 
-	# get current cursor position
+    # get current cursor position
     print(f.tell())
 
 # after 'with open' block
