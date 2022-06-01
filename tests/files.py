@@ -126,3 +126,28 @@ with open('files_csv_parse_old.csv', 'r') as fr:
         for line in reader:
             del line['email']
             writer.writerow(line)
+
+
+# ------------------------------------------------------------------------------
+#
+# --------------------------- renaming files -----------------------------------
+
+import os
+
+# save current dir
+oldir = os.getcwd()
+
+# go to test_files directory
+os.chdir('./files_test_rename')
+
+# rename multiple files
+newPrefix = 'Item'
+sep = '_'
+for f in os.listdir():
+    prefix, suffix = f.split(sep)
+    print(prefix, ', ', suffix)
+    newName = newPrefix + sep + suffix
+    os.rename(f, newName)
+
+# restore dir
+os.chdir(oldir)
