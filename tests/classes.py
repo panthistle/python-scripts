@@ -13,9 +13,6 @@ class Test:
     #     # return type must be string in angled brackets
     #     return f'<{self.name} is an instance of the Test class>'
 
-    def get_name(self):
-        print(self.name)
-
 
 # TESTS
 
@@ -26,7 +23,7 @@ print(f'Test class id {id(Test)}')
 print('-'*20)
 
 m = Test('Mary')
-m.get_name()
+print(m.name)
 print('-'*10)
 # print will use repr()/str() to represent object
 print(f'Mary instance: {m}')
@@ -37,7 +34,7 @@ print(f'Mary instance id: {id(m)}')
 print('-'*20)
 
 g = Test('George')
-g.get_name()
+print(g.name)
 print('-'*10)
 print(f'George instance: {g}')
 print(f'George instance type: {type(g)}')
