@@ -13,39 +13,42 @@ class Test:
     #     # return type must be string in angled brackets
     #     return f'<{self.name} is an instance of the Test class>'
 
+    def get_name(self):
+        print(self.name)
 
-# TESTS
 
-print(f'Test class repr: {repr(Test)}')
-print(f'Test class str: {str(Test)}')
-print(f'Test class type: {type(Test)}')
-print(f'Test class id {id(Test)}')
-print('-'*20)
+# # TESTS
 
-m = Test('Mary')
-print(m.name)
-print('-'*10)
-# print will use repr()/str() to represent object
-print(f'Mary instance: {m}')
-print(f'Mary instance repr: {repr(m)}')
-print(f'Mary instance str: {str(m)}')
-print(f'Mary instance type: {type(m)}')
-print(f'Mary instance id: {id(m)}')
-print('-'*20)
+# print(f'Test class repr: {repr(Test)}')
+# print(f'Test class str: {str(Test)}')
+# print(f'Test class type: {type(Test)}')
+# print(f'Test class id {id(Test)}')
+# print('-'*20)
 
-g = Test('George')
-print(g.name)
-print('-'*10)
-print(f'George instance: {g}')
-print(f'George instance type: {type(g)}')
-print(f'George instance id: {id(g)}')
-print('-'*20)
+# m = Test('Mary')
+# m.get_name()
+# print('-'*10)
+# # print will use repr()/str() to represent object
+# print(f'Mary instance: {m}')
+# print(f'Mary instance repr: {repr(m)}')
+# print(f'Mary instance str: {str(m)}')
+# print(f'Mary instance type: {type(m)}')
+# print(f'Mary instance id: {id(m)}')
+# print('-'*20)
 
-# storing object info with repr()
-rp = repr(m)
-print(f'stored repr: {rp}')
-print(f'stored repr object type: {type(rp)}')
-print('-'*20)
+# g = Test('George')
+# g.get_name()
+# print('-'*10)
+# print(f'George instance: {g}')
+# print(f'George instance type: {type(g)}')
+# print(f'George instance id: {id(g)}')
+# print('-'*20)
+
+# # storing object info with repr()
+# rp = repr(m)
+# print(f'stored repr: {rp}')
+# print(f'stored repr object type: {type(rp)}')
+# print('-'*20)
 
 
 # ------------------------------------------------------------------------------
@@ -56,7 +59,7 @@ print('-'*20)
 import uuid
 
 
-class Relation:
+class Entity:
     ''' object class '''
 
     # initialize
@@ -81,10 +84,10 @@ class Relation:
 
 
 class Registry:
-    ''' one-to-many relations management class '''
+    ''' one-to-many object-association management class '''
 
     def __init__(self):
-        self._objects = {}      # 'Relation' objects container
+        self._objects = {}      # 'Entity' objects container
 
     # public methods
     def clear(self):
@@ -100,13 +103,13 @@ class Registry:
 
         if not self._valid_key(pkey):
             pkey = ''
-        ob = Relation(pkey, name, val)
+        ob = Entity(pkey, name, val)
         key = ob.uid
         self._objects[key] = ob
         return key
 
     def remove_object(self, key):
-        # remove object from registry - adopt orphaned children
+        # remove object, leave children with object's parent or None
 
         if self._valid_key(key):
             ob = self._objects[key]
@@ -211,14 +214,13 @@ class Registry:
 
     def _descendants(self, ob):
         uid = ob.uid
-        alst = self._ancestors(ob) + [uid]
+        alst = self._ancestors(ob, []) + [uid]
         items = [i for i in self._objects.values() if i.uid not in alst]
         lst = []
         for item in items:
             if not item.pid:
                 continue
-            alst = self._ancestors(item)
-            for aid in alst:
+            for aid in self._ancestors(item, []):
                 if aid == uid:
                     lst.append(item.uid)
                     break
