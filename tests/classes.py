@@ -55,7 +55,10 @@ class Test:
 #
 # -------------------------- object relations ----------------------------------
 
-# ONE-TO-MANY RELATIONS EXAMPLE (using uuid module)
+# ONE-TO-MANY RELATIONS EXAMPLE
+# - using uuid module for object unique id
+# - using dictionary for uid->object associative array
+
 import uuid
 
 
@@ -70,13 +73,13 @@ class Entity:
         self.val = val
         #...
 
-    # public stuff
+    # public-access
     @property
     def uid(self):
         return self._uid
     # ...
 
-    # private methods
+    # private-access intended
     def _uid_get(self):
         # make a UUID based on the host ID and current time
         #uuid.uuid1()
@@ -92,7 +95,11 @@ class Registry:
     def __init__(self):
         self._objects = {}      # 'Entity' objects container
 
-    # public methods
+    # public-access
+    @property
+    def entries(self):
+        return list(self._objects.keys())
+
     def clear(self):
         self._objects.clear()
 
@@ -122,9 +129,9 @@ class Registry:
 
         if not (self._valid_key(key) and self._valid_key(pkey)):
             return 'invalid reference'
-        if key == pkey:
+        if pkey == key:
             return 'cannot set self as parent'
-        if pkey in self._descendants(key):
+        if pkey in self._descendants(key, []):
             return 'cannot set descendant as parent'
         ob = self._objects[key]
         if ob.pid == pkey:
@@ -195,7 +202,7 @@ class Registry:
         inval = self._inherited_val(key) / div if div else 0
         return inval + ob.val
 
-    # private methods
+    # private-access intended
     def _valid_key(self, key):
         if key in self._objects:
             return True
@@ -253,16 +260,19 @@ rel_b = rdb.add_object('Jane', 3, rel_a)
 print(f'added entry name: Jane as child of Harry')
 rel_c = rdb.add_object('Ruth', 5, rel_b)
 print(f'added entry name: Ruth as child of Jane')
-rel_d = rdb.add_object('Jim', 2, rel_b)
+rel_d = rdb.add_object('Jim', 2)
+rdb.set_parent(rel_d, rel_b)
 print(f'added entry name: Jim as child of Jane\n')
-print(f'entry {rel_a} info:')
-print(f'{rdb.object_info(rel_a)}Value: {rdb.object_value(rel_a)}\n')
-print(f'entry {rel_b} info:')
-print(f'{rdb.object_info(rel_b)}Value: {rdb.object_value(rel_b)}\n')
-print(f'entry {rel_c} info:')
-print(f'{rdb.object_info(rel_c)}Value: {rdb.object_value(rel_c)}\n')
-print(f'entry {rel_d} info:')
-print(f'{rdb.object_info(rel_d)}Value: {rdb.object_value(rel_d)}\n')
-print(f'try to make Ruth the parent of Harry: {rdb.set_parent(rel_a, rel_c)}')
-print('-'*30)
 
+# for i in range(2):
+#    rdb.add_object(f'Item {i}', i, rel_a)
+
+# for i in range(2, 5):
+#    rdb.add_object(f'Item {i}', i, rel_c)
+#    rdb.add_object(f'Item {i+5}', i, rel_d)
+
+entries = rdb.entries
+for key in entries:
+    print(f'entry {key} info:')
+    print(f'{rdb.object_info(key)}Value: {rdb.object_value(key)}\n')
+print('-'*30)
