@@ -53,24 +53,27 @@ class Test:
 
 # ------------------------------------------------------------------------------
 #
-# ------------------------ object associations ---------------------------------
+# -------------------------- object relations ----------------------------------
 
 # ONE-TO-MANY RELATIONS EXAMPLE (using uuid module)
 import uuid
 
 
 class Entity:
-    ''' object class '''
+    ''' object class - Registry managed '''
 
     # initialize
     def __init__(self, pid='', name='', val=0):
-        self.uid = self._uid_get()
-        self.pid = pid
+        self._uid = self._uid_get()     # object ID
+        self.pid = pid                  # parent ID
         self.name = name
         self.val = val
         #...
 
-    # public methods
+    # public stuff
+    @property
+    def uid(self):
+        return self._uid
     # ...
 
     # private methods
@@ -84,7 +87,7 @@ class Entity:
 
 
 class Registry:
-    ''' one-to-many object-association management class '''
+    ''' one-to-many relations management class '''
 
     def __init__(self):
         self._objects = {}      # 'Entity' objects container
@@ -94,22 +97,20 @@ class Registry:
         self._objects.clear()
 
     def object_exists(self, key):
-        if key in self._objects:
-            return True
-        return False
+        return (key in self._objects)
 
     def add_object(self, name, val, pkey=''):
         # add new object, optionally set existing entry as the parent
 
-        if not self._valid_key(pkey):
+        if pkey not in self._objects:
             pkey = ''
         ob = Entity(pkey, name, val)
-        key = ob.uid
+        key = ob.uid    # new unique key
         self._objects[key] = ob
         return key
 
     def remove_object(self, key):
-        # remove object, leave children with object's parent or None
+        # delete object, leave children with object's parent or None
 
         if self._valid_key(key):
             ob = self._objects[key]
@@ -117,7 +118,7 @@ class Registry:
             del self._objects[key]
 
     def set_parent(self, key, pkey, leave_children=False):
-        # set the parent, leave children with old parent or None
+        # set parent reference
 
         if not (self._valid_key(key) and self._valid_key(pkey)):
             return 'invalid reference'
@@ -129,21 +130,22 @@ class Registry:
         if ob.pid == pkey:
             return 'parent is already set'
         if leave_children:
+            # leave children with old parent or None
             self._change_parent(key, ob.pid)
         ob.pid = pkey
         return 'done'
 
     def remove_parent(self, key, leave_children=False):
-        # remove the parent, leave children with old parent or None
+        # remove parent reference
 
         if not self._valid_key(key):
             return
         ob = self._objects[key]
-        pid = ob.pid
-        if not pid:
+        if not ob.pid:
             return
         if leave_children:
-            self._change_parent(key, pid)
+            # leave children with old parent or None
+            self._change_parent(key, ob.pid)
         ob.pid = ''
 
     def change_name(self, key, new_name):
@@ -154,27 +156,43 @@ class Registry:
         if not self._valid_key(key):
             return ''
         ob = self._objects[key]
-        info = f'my name is {ob.name}. '
+        info = f'Name: {ob.name}\n'
         if ob.pid:
-            info += f'My parent is {self._objects[ob.pid].name}. '
+            info += f'Parent: {self._objects[ob.pid].name}\n'
         else:
-            info += 'I have no parent. '
+            info += 'Parent: None\n'
+        lst = self._ancestors(key, [])
+        if lst:
+            info += 'Ancestors: '
+            for aid in lst:
+                info += f'{self._objects[aid].name} '
+            info += '\n'
+        else:
+            info += 'Ancestors: None\n'
         lst = self._children(key)
         if lst:
-            info += 'My children are: '
-            for child in lst:
-                info += f'{child.name}, '
+            info += 'Children: '
+            for cid in lst:
+                info += f'{self._objects[cid].name} '
+            info += '\n'
         else:
-            info += 'I have no children.'
+            info += 'Children: None\n'
+        lst = self._descendants(key, [])
+        if lst:
+            info += 'Descendants: '
+            for did in lst:
+                info += f'{self._objects[did].name} '
+            info += '\n'
+        else:
+            info += 'Descendants: None\n'
         return info
 
     def object_value(self, key):
         if not self._valid_key(key):
             return 0
         ob = self._objects[key]
-        pid = ob.pid
-        div = len(self._children(pid))
-        inval = self._inherited_val(pid) / div if div else 0
+        div = len(self._children(ob.pid))
+        inval = self._inherited_val(key) / div if div else 0
         return inval + ob.val
 
     # private methods
@@ -190,40 +208,36 @@ class Registry:
                 ob.pid = new
 
     def _children(self, key):
-        lst = []
-        for ob in self._objects.values():
-            if ob.pid == key:
-                lst.append(ob)
+        lst = [ob.uid for ob in self._objects.values() if ob.pid == key]
         return lst
 
-    def _inherited_val(self, pid, val=0):
+    def _inherited_val(self, key, val=0):
+        pid = self._objects[key].pid
+        # if pid in self._objects:    # defensive approach
+        # redundant in this implementation
         if pid:
             ob = self._objects[pid]
             # recursion
-            val += self._inherited_val(ob.pid, ob.val)
+            val += self._inherited_val(ob.uid, ob.val)
         return val
 
-    def _ancestors(self, ob, lst=[]):
-        pid = ob.pid
+    def _ancestors(self, key, lst=[]):
+        pid = self._objects[key].pid
+        # if pid in self._objects:    # defensive approach
+        # redundant in this implementation
         if pid:
             lst.append(pid)
-            n = self._objects[pid]
+            p = self._objects[pid]
             # recursion
-            lst = self._ancestors(n, lst)
+            lst = self._ancestors(p.uid, lst)
         return lst
 
-    def _descendants(self, ob):
-        uid = ob.uid
-        alst = self._ancestors(ob, []) + [uid]
-        items = [i for i in self._objects.values() if i.uid not in alst]
-        lst = []
-        for item in items:
-            if not item.pid:
-                continue
-            for aid in self._ancestors(item, []):
-                if aid == uid:
-                    lst.append(item.uid)
-                    break
+    def _descendants(self, key, lst=[]):
+        children = self._children(key)
+        for uid in children:
+            lst.append(uid)
+            # recursion
+            lst = self._descendants(uid, lst)
         return lst
 
 
@@ -240,15 +254,15 @@ print(f'added entry name: Jane as child of Harry')
 rel_c = rdb.add_object('Ruth', 5, rel_b)
 print(f'added entry name: Ruth as child of Jane')
 rel_d = rdb.add_object('Jim', 2, rel_b)
-print(f'added entry name: Jim as child of Jane')
+print(f'added entry name: Jim as child of Jane\n')
 print(f'entry {rel_a} info:')
-print(f'{rdb.object_info(rel_a)}, value: {rdb.object_value(rel_a)}\n')
+print(f'{rdb.object_info(rel_a)}Value: {rdb.object_value(rel_a)}\n')
 print(f'entry {rel_b} info:')
-print(f'{rdb.object_info(rel_b)}, value: {rdb.object_value(rel_b)}\n')
+print(f'{rdb.object_info(rel_b)}Value: {rdb.object_value(rel_b)}\n')
 print(f'entry {rel_c} info:')
-print(f'{rdb.object_info(rel_c)}, value: {rdb.object_value(rel_c)}\n')
+print(f'{rdb.object_info(rel_c)}Value: {rdb.object_value(rel_c)}\n')
 print(f'entry {rel_d} info:')
-print(f'{rdb.object_info(rel_d)}, value: {rdb.object_value(rel_d)}\n')
+print(f'{rdb.object_info(rel_d)}Value: {rdb.object_value(rel_d)}\n')
 print(f'try to make Ruth the parent of Harry: {rdb.set_parent(rel_a, rel_c)}')
 print('-'*30)
 
