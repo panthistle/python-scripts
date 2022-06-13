@@ -124,9 +124,9 @@ class Registry:
             return 'invalid reference'
         if key == pkey:
             return 'cannot set self as parent'
-        ob = self._objects[key]
-        if pkey in self._descendants(ob):
+        if pkey in self._descendants(key):
             return 'cannot set descendant as parent'
+        ob = self._objects[key]
         if ob.pid == pkey:
             return 'parent is already set'
         if leave_children:
