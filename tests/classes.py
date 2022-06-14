@@ -53,6 +53,82 @@ class Test:
 
 # ------------------------------------------------------------------------------
 #
+# ------------------------------- slots ----------------------------------------
+
+class A:
+    ''' standard python 3 class inheriting from object
+        - instances include __dict__
+        - instances may dynamically add attributes
+    '''
+
+    def __init__(self):
+        self.m_var = 1
+
+# # TESTS
+# print(A)
+# print(A.__dict__, '\n')
+# print(A.__weakref__, '\n')
+# a = A()
+# print(a)
+# print(a.__dict__)
+# a.new_var = 10
+# print(a.new_var)
+
+
+class B:
+    __slots__ = ('m_var', )
+
+    def __init__(self):
+        self.m_var = 1
+
+# # TESTS
+# print(B)
+# print(B.__dict__, '\n')
+# b = B()
+# print(b)
+# # Next assignment raises error since __slots__ does not include 'new_var'
+# # b.new_var = 10
+
+
+class C(dict):
+    ''' dict-derived class with added functionality '''
+    __slots__ = ()
+
+    def __init__(self):
+        super().__init__()
+        # additional initialization
+        # ...
+    
+    # overwrite dict methods
+    def __setitem__(self, key, value):
+        # exclude int type values
+        if isinstance(value, int):
+            print('integer values are not allowed')
+        else:
+            super().__setitem__(key, value)
+
+    # new methods
+    def new_entry(self, key, value):
+        # ensure existing item value is not changed by mistake
+        if key in self:
+            print('key already exists')
+        else:
+            self[key] = value
+
+# # TESTS
+# print(C.__dict__)
+# c = C()
+# c['one'] = 10
+# print('two' in c)
+# c.new_entry('two', 'walnut')
+# c.update({'three': 'almond'})
+# c.new_entry('three', 'hazelnut')
+# for (key, val) in c.items():
+#     print(f'{key} = {val}')
+
+
+# ------------------------------------------------------------------------------
+#
 # -------------------------- object relations ----------------------------------
 
 # ONE-TO-MANY RELATIONS EXAMPLE
@@ -64,6 +140,7 @@ import uuid
 
 class Entity:
     ''' object class - Registry managed '''
+    __slots__ = ('_uid', 'pid', 'name', 'val')
 
     # initialize
     def __init__(self, pid='', name='', val=0):
@@ -71,13 +148,11 @@ class Entity:
         self.pid = pid                  # parent ID
         self.name = name
         self.val = val
-        #...
 
     # public-access
     @property
     def uid(self):
         return self._uid
-    # ...
 
     # private-access intended
     def _uid_get(self):
@@ -91,6 +166,7 @@ class Entity:
 
 class Registry:
     ''' one-to-many relations management class '''
+    __slots__ = ('_objects', )
 
     def __init__(self):
         self._objects = {}      # 'Entity' objects container
@@ -276,3 +352,4 @@ for key in entries:
     print(f'entry {key} info:')
     print(f'{rdb.object_info(key)}Value: {rdb.object_value(key)}\n')
 print('-'*30)
+
