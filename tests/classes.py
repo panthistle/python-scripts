@@ -99,7 +99,7 @@ class C(dict):
         # additional initialization
         # ...
     
-    # overwrite dict methods
+    # override dict methods
     def __setitem__(self, key, value):
         # exclude int type values
         if isinstance(value, int):
@@ -107,7 +107,7 @@ class C(dict):
         else:
             super().__setitem__(key, value)
 
-    # new methods
+    # add new methods
     def new_entry(self, key, value):
         # ensure existing item value is not changed by mistake
         if key in self:
