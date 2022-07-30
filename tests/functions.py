@@ -40,7 +40,7 @@ def func(*args, **kwargs):
 
 
 # TEST
-order = ['clamps', 'shrimps']
+order = ['clams', 'shrimps']
 customer = {'name': 'Joe', 'age': 34}
 func(*order, **customer)
 # OR
