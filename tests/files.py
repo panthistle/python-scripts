@@ -6,7 +6,7 @@
 #f = open("files_test.txt", "r")		# read only
 #f = open("files_test.txt", "w")		# write only
 #f = open("files_test.txt", "a")		# append
-#f = open("files_test.txt", "r+")	    	# read and write
+#f = open("files_test.txt", "r+")	    # read and write
 #print(f.name)
 #print(f.mode)
 #f.close()
@@ -138,7 +138,7 @@ import os
 oldir = os.getcwd()
 
 # go to test_files directory
-os.chdir('./files_test_rename')
+os.chdir('files_test_rename')
 
 # rename multiple files
 newPrefix = 'Item'
