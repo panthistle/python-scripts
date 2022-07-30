@@ -140,7 +140,7 @@ import uuid
 
 class Entity:
     ''' object class - Registry managed '''
-    __slots__ = ('_uid', 'pid', 'name', 'val')
+    # __slots__ = ('_uid', 'pid', 'name', 'val')
 
     # initialize
     def __init__(self, pid='', name='', val=0):
@@ -166,7 +166,7 @@ class Entity:
 
 class Registry:
     ''' one-to-many relations management class '''
-    __slots__ = ('_objects', )
+    # __slots__ = ('_objects', )
 
     def __init__(self):
         self._objects = {}      # 'Entity' objects container
@@ -351,5 +351,7 @@ entries = rdb.entries
 for key in entries:
     print(f'entry {key} info:')
     print(f'{rdb.object_info(key)}Value: {rdb.object_value(key)}\n')
+
+print(f'try to make Ruth the parent of Harry: {rdb.set_parent(rel_a, rel_c)}')
 print('-'*30)
 
