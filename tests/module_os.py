@@ -53,17 +53,17 @@ for dirpath, dirnames, filenames in os.walk(newDir):
 # get environment variables
 print(os.environ.get('USER'))
 
-# safe way to join paths
-#os.path.join(newDir, 'test.txt')
+# # safe way to join paths
+# #os.path.join(newDir, 'test.txt')
 
-# os.path useful properties
-#print(os.path.basename('/tmp/text.txt'))
-#print(os.path.dirname('/tmp/text.txt'))
-#print(os.path.split('/tmp/text.txt'))
-#print(os.path.exists('/tmp/text.txt'))
-#print(os.path.isdir('/tmp/text.txt'))
-#print(os.path.isfile('/tmp/text.txt'))
-#print(os.path.splitext('/tmp/text.txt'))
+# # os.path useful properties
+# #print(os.path.basename('/tmp/text.txt'))
+# #print(os.path.dirname('/tmp/text.txt'))
+# #print(os.path.split('/tmp/text.txt'))
+# #print(os.path.exists('/tmp/text.txt'))
+# #print(os.path.isdir('/tmp/text.txt'))
+# #print(os.path.isfile('/tmp/text.txt'))
+# #print(os.path.splitext('/tmp/text.txt'))
 
 # change back
 os.chdir(curDir)
