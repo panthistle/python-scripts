@@ -24,9 +24,9 @@ boo = (a is b)      # Object Identity:  is
 # Any empty mapping. For example, {}.
 
 
-condition = False
+lst = []
 
-if condition:
+if lst:
     print('Evaluated to True')
 else:
     print('Evaluated to False')
