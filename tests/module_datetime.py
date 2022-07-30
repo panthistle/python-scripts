@@ -1,5 +1,6 @@
+
 import datetime
-import pytz
+import pytz     # pip install pytz
 
 # datetime commands
 #print(dir(datetime))
@@ -31,7 +32,7 @@ def days_between(fromdate, todate):
     td = todate - fromdate
     return td.days
 
-dtb = days_to_bday(today, bday)
+dtb = days_between(today, bday)
 #print(dtb)
 
 
