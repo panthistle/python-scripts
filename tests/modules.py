@@ -23,7 +23,7 @@ def timed_output(msg, sep=' ', interval=1):
         print(i)
         time.sleep(interval)
 
-places = ['Athens', 'Paris', 'London', 'Rome']
+places = ['Athens', 'London', 'Paris', 'Rome']
 
 # use imported module functions/variables
 random_place = random.choice(places)
