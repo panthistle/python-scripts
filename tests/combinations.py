@@ -40,20 +40,3 @@ k = 3
 # results = find_combinations(nset, k, 0, [], [])
 # print(len(results), "\n")
 # print(results)
-
-# RECURSION FUNCTION LOGIC (steps for n=3, k=2):
-# main loop 1st iteration: i = 0
-# 1st call (subloop si): c[1], si=1
-# 2nd call (subloop ti): c[1,2], ti=2
-# jump to c[1], next ti=3, end of subloop ti
-# back to 1st call: c[1,3], si=2
-# jump to c[1], next si=3, end of subloop si
-# main loop 2nd iteration: i = 1
-# 1st call (subloop si): c[2], si=2
-# 2nd call (subloop ti): c[2, 3], ti=3
-# jump to c[2], next ti=3, end of subloop ti
-# next si=3, end of subloop si
-# main loop 3rd iteration: i = 2
-# 1st call (subloop si): c[3], si=3, end of subloop si
-# next i=3, end of main loop
-
