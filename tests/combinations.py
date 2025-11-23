@@ -10,7 +10,7 @@ def total_combinations(n, k):
 
 
 def find_combinations(nset, k, start_index, curr, results):
-    # Base case: combination is complete
+    # Base case: a combination is complete
     if len(curr) == k:
         # add current_combination to results
         results.append(curr.copy())
@@ -18,18 +18,18 @@ def find_combinations(nset, k, start_index, curr, results):
 
     # Recursive step
     for i in range(start_index, len(nset)):
-        # Add the current number to the combination
+        # Add current number to the combination
         curr.append(nset[i])
-        # Recurse with the next number
+        # Recurse with next number
         find_combinations(nset, k, i + 1, curr, results)
-        # Backtrack: remove the last added number to try the next one
+        # Remove last added number to try the next one
         curr.pop()
     return results
 
 
 # Ranges
-n = 45
-k = 5
+n = 12
+k = 3
 
 # # total unique combinations
 # ncombos = total_combinations(n, k)
@@ -41,13 +41,7 @@ k = 5
 # print(len(results), "\n")
 # print(results)
 
-# # store combinations to file
-# with open("5ncs_in_45.txt", "w") as f:
-#     for lst in results:
-#         line = ",".join(f"{x}" for x in lst) + "\n"
-#         f.write(line)
-
-# RECURSION FUNCTION LOGIC:
+# RECURSION FUNCTION LOGIC (steps for n=3, k=2):
 # main loop 1st iteration: i = 0
 # 1st call (subloop si): c[1], si=1
 # 2nd call (subloop ti): c[1,2], ti=2
@@ -62,3 +56,4 @@ k = 5
 # main loop 3rd iteration: i = 2
 # 1st call (subloop si): c[3], si=3, end of subloop si
 # next i=3, end of main loop
+
